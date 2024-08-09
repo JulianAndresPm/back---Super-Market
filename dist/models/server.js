@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const productos_1 = __importDefault(require("../routes/productos"));
 const conexion_1 = __importDefault(require("../db/conexion"));
 const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
 class Server {
     constructor() {
         console.log();
@@ -38,6 +39,8 @@ class Server {
             });
         });
         this.app.use('/api/productos', productos_1.default);
+        // Servir archivos estáticos desde la carpeta 'imagenes'
+        this.app.use('/imagenes', express_1.default.static(path_1.default.join(__dirname, '../../imagenes')));
     }
     midlerwares() {
         //pasar los datos de los productos

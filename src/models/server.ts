@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express'
 import routesProd from '../routes/productos'
 import db from '../db/conexion'
 import cors from 'cors'
+import path from 'path'
 
 
 class Server {
@@ -33,6 +34,9 @@ class Server {
             })
         })
         this.app.use('/api/productos', routesProd)
+
+        // Servir archivos estáticos desde la carpeta 'imagenes'
+        this.app.use('/imagenes', express.static(path.join(__dirname, '../../imagenes')));
     }
 
     midlerwares() {
