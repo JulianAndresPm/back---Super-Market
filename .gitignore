@@ -1,0 +1,6 @@
+#carpeta de imagenes
+imagenes/
+node_modules/
+*.env
+logs/
+*.log
