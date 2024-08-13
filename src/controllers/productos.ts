@@ -74,9 +74,9 @@ export const updateProducto = async (req: Request, res: Response) => {
     // El resto de los campos estarán en req.body
     const { nombre, descripcion, precio, stock} = req.body;
 
-    console.log('ID:', id);
-    console.log('File:', imagen);
-    console.log('Body:', req.body);
+    // console.log('ID:', id);
+    // console.log('File:', imagen);
+    // console.log('Body:', req.body);
 
     try {
         const productos = await producto.findByPk(id);

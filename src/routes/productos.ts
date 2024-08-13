@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { deleteProducto, getProducto, getProductos, postProducto, updateProducto } from "../controllers/productos";
-import upload from '../controllers/imagenes'
+import upload from '../controllers/imagenProducto'
 
 const router = Router();
 
