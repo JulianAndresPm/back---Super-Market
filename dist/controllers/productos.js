@@ -75,17 +75,38 @@ exports.postProducto = postProducto;
 //actualizara los datos del productos
 const updateProducto = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const { body } = req;
-    const productos = yield producto_1.default.findByPk(id);
-    if (productos) {
-        yield productos.update(body);
-        res.json({
-            msg: 'Producto actualizaso exitosamente'
-        });
+    // Si estás usando multer, los archivos estarán en req.file o req.files
+    const imagen = req.file;
+    // El resto de los campos estarán en req.body
+    const { nombre, descripcion, precio, stock } = req.body;
+    console.log('ID:', id);
+    console.log('File:', imagen);
+    console.log('Body:', req.body);
+    try {
+        const productos = yield producto_1.default.findByPk(id);
+        if (productos) {
+            // Si tienes un archivo, puedes actualizar la ruta de la imagen también
+            if (imagen) {
+                yield productos.update(Object.assign(Object.assign({}, req.body), { imagen: imagen.filename // Asegúrate de guardar la ruta correcta
+                 }));
+            }
+            else {
+                yield productos.update(req.body);
+            }
+            res.json({
+                msg: 'Producto actualizado exitosamente'
+            });
+        }
+        else {
+            res.status(404).json({
+                msg: 'Producto no encontrado'
+            });
+        }
     }
-    else {
-        res.status(444).json({
-            msg: 'No fue posible actualizar'
+    catch (error) {
+        console.error('Error al actualizar producto:', error);
+        res.status(500).json({
+            msg: 'Error al actualizar producto'
         });
     }
 });
