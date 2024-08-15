@@ -1,6 +1,6 @@
 import { Router } from "express";
 import upload from '../controllers/fotoUsuario'
-import { getUsuariosAdmin, postUsuarios } from "../controllers/login";
+import { getUsuariosAdmin, postUsuarios } from "../controllers/admins";
 
 const router = Router();
 

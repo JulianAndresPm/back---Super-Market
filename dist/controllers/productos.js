@@ -79,9 +79,9 @@ const updateProducto = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const imagen = req.file;
     // El resto de los campos estarán en req.body
     const { nombre, descripcion, precio, stock } = req.body;
-    console.log('ID:', id);
-    console.log('File:', imagen);
-    console.log('Body:', req.body);
+    // console.log('ID:', id);
+    // console.log('File:', imagen);
+    // console.log('Body:', req.body);
     try {
         const productos = yield producto_1.default.findByPk(id);
         if (productos) {

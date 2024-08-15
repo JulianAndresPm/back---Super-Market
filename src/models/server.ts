@@ -1,9 +1,11 @@
 import express, { Application, Request, Response } from 'express'
 import routesProd from '../routes/productos'
 import routesAdmin from '../routes/admin'
+import routesClientes from '../routes/clientes'
 import db from '../db/conexion'
 import cors from 'cors'
 import path from 'path'
+import imagenProducto from '../controllers/imagenProducto'
 
 
 class Server {
@@ -40,6 +42,10 @@ class Server {
 
         // Ruta para crud de administradores
         this.app.use('/api/admin', routesAdmin);
+
+        //Ruta para crud de usuarios(clientes)
+        this.app.use('/api/clientes', routesClientes);
+
 
         // Servir archivos estáticos desde la carpeta 'imagenes'
         this.app.use('/imagenes', express.static(path.join(__dirname, '../../imagenes')));

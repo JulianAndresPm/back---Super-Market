@@ -5,8 +5,8 @@ import fs from 'fs';
 const storage: StorageEngine = multer.diskStorage({
   destination: function (req, file, cb) {
     // Usar __dirname para calcular la ruta desde la ubicación del archivo ejecutado
-    const uploadPath = path.join(__dirname, '../../imagenes'); 
-    // console.log('Saving image to:', uploadPath)
+    const uploadPath = path.join(__dirname, '../../fotos clientes'); 
+    console.log('Saving image to:', uploadPath)
 
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
@@ -21,4 +21,4 @@ const storage: StorageEngine = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-export default upload.single('imagen');
+export default upload.single('foto');

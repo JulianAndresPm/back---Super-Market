@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const productos_1 = __importDefault(require("../routes/productos"));
+const admin_1 = __importDefault(require("../routes/admin"));
+const clientes_1 = __importDefault(require("../routes/clientes"));
 const conexion_1 = __importDefault(require("../db/conexion"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
@@ -38,7 +40,12 @@ class Server {
                 msg: 'yes'
             });
         });
+        //rutas para acceso al crud de productso
         this.app.use('/api/productos', productos_1.default);
+        // Ruta para crud de administradores
+        this.app.use('/api/admin', admin_1.default);
+        //Ruta para crud de usuarios(clientes)
+        this.app.use('/api/clientes', clientes_1.default);
         // Servir archivos estáticos desde la carpeta 'imagenes'
         this.app.use('/imagenes', express_1.default.static(path_1.default.join(__dirname, '../../imagenes')));
     }
