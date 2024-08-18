@@ -75,7 +75,7 @@ exports.postProducto = postProducto;
 //actualizara los datos del productos
 const updateProducto = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    // Si estás usando multer, los archivos estarán en req.file o req.files
+    // los archivos estarán en req.file o req.files
     const imagen = req.file;
     // El resto de los campos estarán en req.body
     const { nombre, descripcion, precio, stock } = req.body;

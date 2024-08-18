@@ -17,6 +17,7 @@ const clientes_1 = __importDefault(require("../models/clientes"));
 //Agregar Clientes
 const postClientes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
+    console.log(body);
     const foto = req.file ? req.file.filename : null;
     try {
         // Crea el usuario con los datos del cuerpo y la imagen si está disponible
@@ -55,7 +56,7 @@ const updateClientes = (req, res) => __awaiter(void 0, void 0, void 0, function*
     // Si estás usando multer, los archivos estarán en req.file o req.files
     const foto = req.file;
     // El resto de los campos estarán en req.body
-    const { nombre, apellidos, edad, sexo, correo, passw } = req.body;
+    const { nombre, apellidos, edad, sexo, correo, contraseña } = req.body;
     // console.log('ID:', id);
     // console.log('File:', imagen);
     // console.log('Body:', req.body);

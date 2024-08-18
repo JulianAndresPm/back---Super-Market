@@ -24,7 +24,7 @@ const clientes = conexion_1.default.define('usuarios_clientes', {
     usuario: {
         type: sequelize_1.DataTypes.STRING
     },
-    passw: {
+    contrasena: {
         type: sequelize_1.DataTypes.STRING
     },
     foto: {

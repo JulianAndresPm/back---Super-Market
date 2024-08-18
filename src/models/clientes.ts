@@ -21,7 +21,7 @@ const clientes = db.define('usuarios_clientes',{
     usuario:{
         type: DataTypes.STRING
     },
-    passw:{
+    contrasena:{
         type: DataTypes.STRING
     },
     foto:{

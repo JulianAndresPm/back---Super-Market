@@ -4,6 +4,8 @@ import clientes from "../models/clientes";
 //Agregar Clientes
 export const postClientes = async (req: Request, res: Response) =>{
     const { body } = req;
+    console.log(body);
+    
     const foto = req.file ? req.file.filename : null
 
     try {
@@ -47,7 +49,7 @@ export const updateClientes = async (req: Request, res: Response) => {
     const foto = req.file;
 
     // El resto de los campos estarán en req.body
-    const { nombre, apellidos, edad, sexo, correo, passw} = req.body;
+    const { nombre, apellidos, edad, sexo, correo, contraseña} = req.body;
 
     // console.log('ID:', id);
     // console.log('File:', imagen);

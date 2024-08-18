@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getClientes, getCliente, postClientes, updateClientes } from "../controllers/clientes";
-import upload from '../controllers/fotoCliente'
+import upload from '../controllers/middelware.fotoCliente'
 
 const router = Router();
 

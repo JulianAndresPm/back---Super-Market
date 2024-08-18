@@ -5,7 +5,6 @@ import routesClientes from '../routes/clientes'
 import db from '../db/conexion'
 import cors from 'cors'
 import path from 'path'
-import imagenProducto from '../controllers/imagenProducto'
 
 
 class Server {

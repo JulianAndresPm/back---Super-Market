@@ -68,7 +68,7 @@ export const postProducto = async (req: Request, res: Response) => {
 export const updateProducto = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    // Si estás usando multer, los archivos estarán en req.file o req.files
+    // los archivos estarán en req.file o req.files
     const imagen = req.file;
 
     // El resto de los campos estarán en req.body
