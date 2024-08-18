@@ -48,6 +48,7 @@ class Server {
         this.app.use('/api/clientes', clientes_1.default);
         // Servir archivos estáticos desde la carpeta 'imagenes'
         this.app.use('/imagenes', express_1.default.static(path_1.default.join(__dirname, '../../imagenes')));
+        this.app.use('/fotosAdmin', express_1.default.static(path_1.default.join(__dirname, '../../fotos_usuarios')));
     }
     midlerwares() {
         //pasar los datos de los productos

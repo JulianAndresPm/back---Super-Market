@@ -48,6 +48,7 @@ class Server {
 
         // Servir archivos estáticos desde la carpeta 'imagenes'
         this.app.use('/imagenes', express.static(path.join(__dirname, '../../imagenes')));
+        this.app.use('/fotosAdmin', express.static(path.join(__dirname, '../../fotos_usuarios')));
     }
 
     midlerwares() {

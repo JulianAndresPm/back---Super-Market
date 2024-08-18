@@ -9,7 +9,7 @@ const fs_1 = __importDefault(require("fs"));
 const storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
         // Usar __dirname para calcular la ruta desde la ubicación del archivo ejecutado
-        const uploadPath = path_1.default.join(__dirname, '../../fotos usuarios');
+        const uploadPath = path_1.default.join(__dirname, '../../fotos_usuarios');
         console.log('Saving image to:', uploadPath);
         if (!fs_1.default.existsSync(uploadPath)) {
             fs_1.default.mkdirSync(uploadPath, { recursive: true });

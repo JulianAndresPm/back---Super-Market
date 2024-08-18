@@ -1,6 +1,7 @@
 #carpeta de imagenes
 imagenes/
 fotos usuarios/
+fotos clientes/
 node_modules/
 *.env
 logs/
