@@ -1,6 +1,6 @@
 #carpeta de imagenes
 imagenes/
-fotos usuarios/
+fotos_usuarios/
 fotos clientes/
 node_modules/
 *.env

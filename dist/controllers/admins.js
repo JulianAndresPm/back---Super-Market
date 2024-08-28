@@ -12,9 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUsuarioAdmin = exports.getUsuarioAdmin = exports.login = exports.postUsuarios = exports.getListUsuariosAdmin = void 0;
+exports.updateUsuarioAdmin = exports.getUsuarioAdmin = exports.postUsuarios = exports.getListUsuariosAdmin = void 0;
 const usuarios_admin_1 = __importDefault(require("../models/usuarios_admin"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const getListUsuariosAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const listaUsuarios = yield usuarios_admin_1.default.findAll();
@@ -47,35 +46,6 @@ const postUsuarios = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.postUsuarios = postUsuarios;
-//validar el incio de sesion - login
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const KEY = process.env.JWT_KEY;
-    console.log(KEY);
-    const { usuario, passw } = req.body;
-    try {
-        // Buscar al usuario en la tabla de administradores
-        const admin = yield usuarios_admin_1.default.findOne({ where: { usuario, passw } });
-        if (!admin) {
-            // Si no se encuentra el usuario, enviar una respuesta de error
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
-        try {
-            const accesstoken = jsonwebtoken_1.default.sign({ usuario, passw }, KEY, { expiresIn: '5m' });
-            res.status(200).json({ message: 'Login successful', admin, accesstoken });
-        }
-        catch (error) {
-            console.log('JWT sign error:', error);
-            return res.status(500).json({ message: 'Token generation failed' });
-        }
-        // const token = jwt.sign({ id: admin.id, usuario: admin.usuario }, KEY, { expiresIn: '1h' });
-    }
-    catch (error) {
-        // Manejo de errores del servidor
-        console.log(error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-exports.login = login;
 //obtener datos del usuario
 const getUsuarioAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;

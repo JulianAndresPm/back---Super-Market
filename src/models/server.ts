@@ -2,9 +2,11 @@ import express, { Application, Request, Response } from 'express'
 import routesProd from '../routes/productos'
 import routesAdmin from '../routes/admin'
 import routesClientes from '../routes/clientes'
+import routesLogin from '../routes/login'
 import db from '../db/conexion'
 import cors from 'cors'
 import path from 'path'
+import imagenProducto from '../controllers/imagenProducto'
 
 
 class Server {
@@ -44,6 +46,10 @@ class Server {
 
         //Ruta para crud de usuarios(clientes)
         this.app.use('/api/clientes', routesClientes);
+
+
+        //Ruta para validar el login
+        this.app.use('/api/login',routesLogin )
 
 
         // Servir archivos estáticos desde la carpeta 'imagenes'

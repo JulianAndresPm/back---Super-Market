@@ -13,6 +13,4 @@ router.get('/:id', admins_1.getUsuarioAdmin);
 // router.delete('/:id', deleteProducto);
 router.post('/', middelware_fotoUsuarios_1.default, admins_1.postUsuarios);
 router.put('/:id', middelware_fotoUsuarios_1.default, admins_1.updateUsuarioAdmin);
-//ruta para validar el inicio de sesion
-router.post('/login', admins_1.login);
 exports.default = router;

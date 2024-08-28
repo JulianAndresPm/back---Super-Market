@@ -12,37 +12,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postUsuarios = exports.getUsuariosAdmin = void 0;
+exports.login = void 0;
 const usuarios_admin_1 = __importDefault(require("../models/usuarios_admin"));
-const getUsuariosAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const clientes_1 = __importDefault(require("../models/clientes"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+// Validar el inicio de sesión - login
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const KEY = process.env.JWT_KEY;
+    const { usuario, passw } = req.body;
     try {
-        const listaUsuarios = yield usuarios_admin_1.default.findAll();
-        res.json(listaUsuarios);
+        // Buscar al usuario en la tabla de administradores
+        const admin = yield usuarios_admin_1.default.findOne({ where: { usuario, passw } });
+        if (admin) {
+            // Usuario encontrado en admin
+            const accesstoken = jsonwebtoken_1.default.sign({ usuario: admin.get('usuario'), rol: admin.get('rol') }, KEY, { expiresIn: '5m' });
+            return res.status(200).json({
+                message: 'Login successful admin',
+                accesstoken,
+                rol: admin.get('rol'),
+                admin
+            });
+        }
+        // Si no se encuentra en administradores, buscar en clientes
+        const cliente = yield clientes_1.default.findOne({ where: { usuario, contrasena: passw } });
+        if (cliente) {
+            // Usuario encontrado en cliente
+            const accesstoken = jsonwebtoken_1.default.sign({ usuario: cliente.get('usuario'), rol: 'cliente' }, KEY, { expiresIn: '5m' });
+            return res.status(200).json({
+                message: 'Login successful cliente',
+                accesstoken,
+                rol: 'cliente',
+                cliente
+            });
+        }
+        // Si no se encuentra el usuario en ninguna tabla
+        return res.status(401).json({ message: 'Invalid credentials' });
     }
     catch (error) {
-        console.error('Error al obtener los usuarios:', error);
-        res.status(500).json({ msg: 'Error al obtener los usuarios' });
+        console.log(error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
-exports.getUsuariosAdmin = getUsuariosAdmin;
-//enviar o agregar producto
-const postUsuarios = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { body } = req;
-    const imagen = req.file ? req.file.filename : null; // Captura el nombre del archivo subido
-    try {
-        // Crea el usuario con los datos del cuerpo y la imagen si está disponible
-        yield usuarios_admin_1.default.create(Object.assign(Object.assign({}, body), { foto: imagen // Guarda el nombre del archivo en la base de datos
-         }));
-        res.json({
-            msg: 'Usuario agregado exitosamente'
-        });
-    }
-    catch (error) {
-        console.error('Error al agregar el usuario:', error); // Imprime el error en la consola para depuración
-        res.status(500).json({
-            msg: 'No fue posible agregar el usuario',
-            error
-        });
-    }
-});
-exports.postUsuarios = postUsuarios;
+exports.login = login;
