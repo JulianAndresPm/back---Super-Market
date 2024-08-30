@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import usuarioAdmin from "../models/usuarios_admin";
 import clientes from "../models/clientes";
-import jwt from 'jsonwebtoken';
+import jwt, { Secret } from 'jsonwebtoken';
 
 // Validar el inicio de sesión - login
 export const login = async (req: Request, res: Response) => {
@@ -16,13 +16,13 @@ export const login = async (req: Request, res: Response) => {
             // Usuario encontrado en admin
             const accesstoken = jwt.sign(
                 { usuario: admin.get('usuario'), rol: admin.get('rol') },
-                KEY,
+                KEY as Secret,
                 { expiresIn: '5m' }
             );
             return res.status(200).json({
                 message: 'Login successful admin',
                 accesstoken,
-                rol: admin.get('rol'),
+                UserType: admin.get('rol'),
                 admin
             });
         }
@@ -33,13 +33,13 @@ export const login = async (req: Request, res: Response) => {
             // Usuario encontrado en cliente
             const accesstoken = jwt.sign(
                 { usuario: cliente.get('usuario'), rol: 'cliente' },
-                KEY,
+                KEY as Secret,
                 { expiresIn: '5m' }
             );
             return res.status(200).json({
                 message: 'Login successful cliente',
                 accesstoken,
-                rol: 'cliente',
+                UserType: 'cliente',
                 cliente
             });
         }

@@ -14,7 +14,6 @@ class Server {
     private port: string;
 
     constructor() {
-        console.log();
         this.app = express();
         this.port = process.env.PORT || '3001';
         this.listen();
@@ -55,6 +54,7 @@ class Server {
         // Servir archivos estáticos desde la carpeta 'imagenes'
         this.app.use('/imagenes', express.static(path.join(__dirname, '../../imagenes')));
         this.app.use('/fotosAdmin', express.static(path.join(__dirname, '../../fotos_usuarios')));
+        this.app.use('/fotosClientes', express.static(path.join(__dirname, '../../fotos_clientes')));
     }
 
     midlerwares() {

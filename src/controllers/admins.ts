@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import usuarioAdmin from "../models/usuarios_admin";
-import jwt from 'jsonwebtoken'
 
 
 

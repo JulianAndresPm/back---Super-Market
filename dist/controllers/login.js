@@ -29,7 +29,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(200).json({
                 message: 'Login successful admin',
                 accesstoken,
-                rol: admin.get('rol'),
+                UserType: admin.get('rol'),
                 admin
             });
         }
@@ -41,7 +41,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(200).json({
                 message: 'Login successful cliente',
                 accesstoken,
-                rol: 'cliente',
+                UserType: 'cliente',
                 cliente
             });
         }

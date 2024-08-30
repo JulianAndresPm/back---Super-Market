@@ -22,7 +22,6 @@ const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 class Server {
     constructor() {
-        console.log();
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '3001';
         this.listen();
@@ -52,6 +51,7 @@ class Server {
         // Servir archivos estáticos desde la carpeta 'imagenes'
         this.app.use('/imagenes', express_1.default.static(path_1.default.join(__dirname, '../../imagenes')));
         this.app.use('/fotosAdmin', express_1.default.static(path_1.default.join(__dirname, '../../fotos_usuarios')));
+        this.app.use('/fotosClientes', express_1.default.static(path_1.default.join(__dirname, '../../fotos_clientes')));
     }
     midlerwares() {
         //pasar los datos de los productos
