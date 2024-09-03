@@ -68,10 +68,13 @@ export const updateClientes = async (req: Request, res: Response) => {
             } else {
                 await cliente.update(req.body);
             }
+
+            // Obtén los datos actualizados del cliente
+            // const clienteActualizado = await clientes.findByPk(id);
+            await cliente.reload()
+            //enviar nuevamente los datos actualizados
+            res.json(cliente);
             
-            res.json({
-                msg: 'Datos actualizado exitosamente'
-            });
         } else {
             res.status(404).json({
                 msg: 'Datos no encontrado'

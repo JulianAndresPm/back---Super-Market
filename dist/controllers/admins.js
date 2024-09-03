@@ -81,9 +81,9 @@ const updateUsuarioAdmin = (req, res) => __awaiter(void 0, void 0, void 0, funct
             else {
                 yield usuario.update(req.body);
             }
-            res.json({
-                msg: 'usuario actualizado exitosamente'
-            });
+            yield usuario.reload();
+            //enviar nuevamente los datos actualizados
+            res.json(usuario);
         }
         else {
             res.status(404).json({

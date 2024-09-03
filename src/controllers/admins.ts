@@ -82,9 +82,9 @@ export const updateUsuarioAdmin = async (req: Request, res: Response) => {
                 await usuario.update(req.body);
             }
             
-            res.json({
-                msg: 'usuario actualizado exitosamente'
-            });
+            await usuario.reload()
+            //enviar nuevamente los datos actualizados
+            res.json(usuario);
         } else {
             res.status(404).json({
                 msg: 'usuario no encontrado'

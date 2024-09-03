@@ -71,9 +71,11 @@ const updateClientes = (req, res) => __awaiter(void 0, void 0, void 0, function*
             else {
                 yield cliente.update(req.body);
             }
-            res.json({
-                msg: 'Datos actualizado exitosamente'
-            });
+            // Obtén los datos actualizados del cliente
+            // const clienteActualizado = await clientes.findByPk(id);
+            yield cliente.reload();
+            //enviar nuevamente los datos actualizados
+            res.json(cliente);
         }
         else {
             res.status(404).json({
