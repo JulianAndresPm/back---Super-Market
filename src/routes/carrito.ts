@@ -1,5 +1,7 @@
 import { Router } from 'express';
-import { getListaCarrito, postCarrito, dataCarrito, updateCarrito, getCarritoByUser } from '../controllers/carrito';
+import { 
+    getListaCarrito, postCarrito, dataCarrito, updateCarrito, getCarritoByUser, deleteCarrito
+} from '../controllers/carrito';
 
 const router = Router();
 
@@ -14,6 +16,9 @@ router.post('/', postCarrito);
 router.get('/:id', dataCarrito)
 //envia los datos actualizados
 router.put('/:id', updateCarrito)
+//eliminar un producto
+router.delete('/:id', deleteCarrito)
+
 
 
 

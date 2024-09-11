@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCarrito = exports.dataCarrito = exports.postCarrito = exports.getCarritoByUser = exports.getListaCarrito = void 0;
+exports.deleteCarrito = exports.updateCarrito = exports.dataCarrito = exports.postCarrito = exports.getCarritoByUser = exports.getListaCarrito = void 0;
 const carrito_1 = __importDefault(require("../models/carrito"));
 const producto_1 = __importDefault(require("../models/producto"));
+const carrito_2 = __importDefault(require("../models/carrito"));
 const getListaCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const listaCarrito = yield carrito_1.default.findAll(); // Verifica aquí si obtienes resultados
@@ -166,3 +167,19 @@ const updateCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.updateCarrito = updateCarrito;
+const deleteCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const carrito = yield carrito_2.default.findByPk(id);
+    if (carrito) {
+        yield carrito.destroy();
+        res.json({
+            msg: 'Producto del carrito eliminado con exito'
+        });
+    }
+    else {
+        res.status(444).json({
+            msg: 'No fue posible eliminar este producto del carrito'
+        });
+    }
+});
+exports.deleteCarrito = deleteCarrito;

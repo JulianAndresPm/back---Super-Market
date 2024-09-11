@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import carrito from "../models/carrito"; 
 import producto from "../models/producto";
+import Carrito from "../models/carrito";
 
 
 
@@ -172,3 +173,19 @@ export const updateCarrito = async (req: Request, res: Response) => {
     }
     
 };
+
+export const deleteCarrito = async(req: Request, res: Response) =>{
+    const {id} = req.params;
+    const carrito = await Carrito.findByPk(id);
+
+    if (carrito) {
+        await carrito.destroy();
+        res.json({
+            msg: 'Producto del carrito eliminado con exito'
+        })
+    } else {
+        res.status(444).json({
+            msg: 'No fue posible eliminar este producto del carrito'
+        })
+    }
+}

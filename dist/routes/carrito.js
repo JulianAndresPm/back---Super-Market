@@ -14,4 +14,6 @@ router.post('/', carrito_1.postCarrito);
 router.get('/:id', carrito_1.dataCarrito);
 //envia los datos actualizados
 router.put('/:id', carrito_1.updateCarrito);
+//eliminar un producto
+router.delete('/:id', carrito_1.deleteCarrito);
 exports.default = router;

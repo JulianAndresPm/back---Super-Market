@@ -23,7 +23,6 @@ export const getProducto = async(req: Request, res: Response) =>{
 }
 
 //eliminar productos
-
 export const deleteProducto = async(req: Request, res: Response) =>{
     const { id } = req.params;
     const productos = await producto.findByPk(id)
