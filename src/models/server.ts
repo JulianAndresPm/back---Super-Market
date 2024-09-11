@@ -3,10 +3,12 @@ import routesProd from '../routes/productos'
 import routesAdmin from '../routes/admin'
 import routesClientes from '../routes/clientes'
 import routesLogin from '../routes/login'
+import routesCarrito from '../routes/carrito'
 import db from '../db/conexion'
 import cors from 'cors'
 import path from 'path'
-import imagenProducto from '../controllers/imagenProducto'
+import morgan  from 'morgan'
+
 
 
 class Server {
@@ -37,7 +39,7 @@ class Server {
             })
         })
 
-        //rutas para acceso al crud de productso
+        //rutas para acceso al crud de productos
         this.app.use('/api/productos', routesProd)
 
         // Ruta para crud de administradores
@@ -46,6 +48,8 @@ class Server {
         //Ruta para crud de usuarios(clientes)
         this.app.use('/api/clientes', routesClientes);
 
+        //Ruta para crud de carrito
+        this.app.use('/api/carrito', routesCarrito);
 
         //Ruta para validar el login
         this.app.use('/api/login',routesLogin )
@@ -58,10 +62,10 @@ class Server {
     }
 
     midlerwares() {
-
-        //pasar los datos de los productos
+        //visualizar las peticiones
+        this.app.use(morgan('combined'));
+        //pasar los datos
         this.app.use(express.json());
-
         //cors
         this.app.use(cors());
 

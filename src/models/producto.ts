@@ -1,5 +1,6 @@
 import db from '../db/conexion'
 import {DataTypes } from 'sequelize'
+import Carrito from './carrito';
 
 
 const producto = db.define('producto',{
@@ -23,7 +24,7 @@ const producto = db.define('producto',{
     updatedAt: false
 });
 
-
-
+// Configura la asociación hasMany entre Producto y Carrito
+// producto.hasMany(Carrito, { foreignKey: 'producto_id', as: 'Carritos' });
 
 export default producto;

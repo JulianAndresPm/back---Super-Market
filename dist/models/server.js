@@ -17,9 +17,11 @@ const productos_1 = __importDefault(require("../routes/productos"));
 const admin_1 = __importDefault(require("../routes/admin"));
 const clientes_1 = __importDefault(require("../routes/clientes"));
 const login_1 = __importDefault(require("../routes/login"));
+const carrito_1 = __importDefault(require("../routes/carrito"));
 const conexion_1 = __importDefault(require("../db/conexion"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
+const morgan_1 = __importDefault(require("morgan"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -40,12 +42,14 @@ class Server {
                 msg: 'yes'
             });
         });
-        //rutas para acceso al crud de productso
+        //rutas para acceso al crud de productos
         this.app.use('/api/productos', productos_1.default);
         // Ruta para crud de administradores
         this.app.use('/api/admin', admin_1.default);
         //Ruta para crud de usuarios(clientes)
         this.app.use('/api/clientes', clientes_1.default);
+        //Ruta para crud de carrito
+        this.app.use('/api/carrito', carrito_1.default);
         //Ruta para validar el login
         this.app.use('/api/login', login_1.default);
         // Servir archivos estáticos desde la carpeta 'imagenes'
@@ -54,7 +58,9 @@ class Server {
         this.app.use('/fotosClientes', express_1.default.static(path_1.default.join(__dirname, '../../fotos_clientes')));
     }
     midlerwares() {
-        //pasar los datos de los productos
+        //visualizar las peticiones
+        this.app.use((0, morgan_1.default)('combined'));
+        //pasar los datos
         this.app.use(express_1.default.json());
         //cors
         this.app.use((0, cors_1.default)());

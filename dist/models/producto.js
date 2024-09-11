@@ -25,4 +25,6 @@ const producto = conexion_1.default.define('producto', {
     createdAt: false,
     updatedAt: false
 });
+// Configura la asociación hasMany entre Producto y Carrito
+// producto.hasMany(Carrito, { foreignKey: 'producto_id', as: 'Carritos' });
 exports.default = producto;
