@@ -1,7 +1,8 @@
-import Server from "./models/server";
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+import serverInstance from './models/server'; // Asegúrate de que esta ruta sea correcta
 
-//configuracion de las variables de entorno
+// Configuración de las variables de entorno
 dotenv.config();
 
-const server = new Server();
+// Usar la instancia directamente, sin 'new'
+serverInstance.listen();

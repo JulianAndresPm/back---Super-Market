@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.io = void 0;
 const express_1 = __importDefault(require("express"));
 const productos_1 = __importDefault(require("../routes/productos"));
 const admin_1 = __importDefault(require("../routes/admin"));
@@ -21,21 +22,44 @@ const carrito_1 = __importDefault(require("../routes/carrito"));
 const conexion_1 = __importDefault(require("../db/conexion"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
-const morgan_1 = __importDefault(require("morgan"));
+const http_1 = require("http"); // Importar el servidor HTTP de Node.js
+const socket_io_1 = require("socket.io"); // Importar Socket.IO
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
-        this.port = process.env.PORT || '3001';
-        this.listen();
+        this.port = process.env.PORT || '3000';
+        // Crear servidor HTTP y Socket.IO
+        this.server = (0, http_1.createServer)(this.app); // Crear servidor HTTP
+        this.io = new socket_io_1.Server(this.server, {
+            cors: {
+                origin: "http://localhost:4200", // URL de tu frontend Angular
+                methods: ["GET", "POST", "DELETE", "PUT"]
+            }
+        });
         this.midlerwares();
         this.routes();
+        this.sockets();
         this.testConnection();
     }
     listen() {
-        this.app.listen(this.port, () => {
-            console.log("puerto: " + this.port);
+        this.server.listen(this.port, () => {
+            console.log("Servidor Corriendo en el puerto: " + this.port);
         });
     }
+    sockets() {
+        this.io.on('connection', (socket) => {
+            console.log('Nuevo cliente conectado', socket.id);
+            // Confirmar que se ha establecido la conexión
+            socket.emit('conectado', { msg: 'Conectado exitosamente al servidor', });
+            socket.on('disconnect', () => {
+                console.log('Cliente desconectado: ', socket.id);
+            });
+        });
+    }
+    getIo() {
+        return this.io;
+    }
+    //rutas 
     routes() {
         this.app.get('/', (req, res) => {
             res.json({
@@ -58,13 +82,14 @@ class Server {
         this.app.use('/fotosClientes', express_1.default.static(path_1.default.join(__dirname, '../../fotos_clientes')));
     }
     midlerwares() {
-        //visualizar las peticiones
-        this.app.use((0, morgan_1.default)('combined'));
+        // //visualizar las peticiones
+        // this.app.use(morgan('combined'));
         //pasar los datos
         this.app.use(express_1.default.json());
         //cors
         this.app.use((0, cors_1.default)());
     }
+    //-------------------------------------------
     //------------------------------------
     testConnection() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -81,4 +106,6 @@ class Server {
         });
     }
 }
-exports.default = Server;
+const serverInstance = new Server(); // Crear la instancia del servidor
+exports.io = serverInstance.getIo(); // Exportar la instancia de io
+exports.default = serverInstance; // Exportar la instancia del servidor

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import carrito from "../models/carrito"; 
 import producto from "../models/producto";
-import Carrito from "../models/carrito";
-
+import Carrito from "../models/carrito"
+import { io } from '../models/server'; 
 
 
 
@@ -31,7 +31,7 @@ export const getCarritoByUser = async(req: Request, res:Response)=>{
     //id del usuario en la session storage
     const {usuario_id} = req.params;
 
-    console.log('ID del usuario obtenido de la ruta:', usuario_id);
+    // console.log('ID del usuario obtenido de la ruta:', usuario_id);
 
     try {
         const getProductos = await carrito.findAll({
@@ -87,6 +87,8 @@ export const postCarrito = async (req: Request, res: Response) => {
             subtotal
         });
 
+        //emitir un evento de websocket cuando se agrega un prodcuto al carrito
+        io.emit('carritoActualizado',{usuario_id, carrito: nuevoCarrito})
         res.json({
             msg: 'Registro agregado exitosamente',
             data: nuevoCarrito  // Puedes devolver el registro creado si es necesario
@@ -180,6 +182,8 @@ export const deleteCarrito = async(req: Request, res: Response) =>{
 
     if (carrito) {
         await carrito.destroy();
+        // Emitir un evento de WebSocket cuando se elimina un producto
+        io.emit('carritoEliminado', { carritoId: id }); // Actualiza la lista del carrito
         res.json({
             msg: 'Producto del carrito eliminado con exito'
         })

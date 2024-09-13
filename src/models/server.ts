@@ -8,30 +8,62 @@ import db from '../db/conexion'
 import cors from 'cors'
 import path from 'path'
 import morgan  from 'morgan'
+import { createServer } from 'http'; // Importar el servidor HTTP de Node.js
+import { Server as SocketIOServer, Socket } from 'socket.io'; // Importar Socket.IO
 
 
 
 class Server {
     private app: Application;
     private port: string;
+    private io: SocketIOServer; // Agregar Socket.IO
+    private server: any; // Agregar servidor HTTP
 
     constructor() {
         this.app = express();
-        this.port = process.env.PORT || '3001';
-        this.listen();
+        this.port = process.env.PORT || '3000';
+
+        // Crear servidor HTTP y Socket.IO
+        this.server = createServer(this.app); // Crear servidor HTTP
+        this.io = new SocketIOServer(this.server, {
+            cors: {
+              origin: "http://localhost:4200", // URL de tu frontend Angular
+              methods: ["GET", "POST", "DELETE", "PUT"]
+            }
+          });
+          
+
         this.midlerwares();
         this.routes();
+        this.sockets(); 
         this.testConnection();
 
     }
 
     listen() {
-        this.app.listen(this.port, () => {
-            console.log("puerto: " + this.port);
+        this.server.listen(this.port, () => {
+            console.log("Servidor Corriendo en el puerto: " + this.port);
 
         })
     }
 
+    sockets(){
+        this.io.on('connection', (socket: Socket)=>{
+            console.log('Nuevo cliente conectado', socket.id);
+            // Confirmar que se ha establecido la conexión
+             socket.emit('conectado', { msg: 'Conectado exitosamente al servidor',  });
+
+            socket.on('disconnect', ()=>{
+                console.log('Cliente desconectado: ', socket.id); 
+            });
+        });
+    }
+    
+    getIo(){
+        return this.io;
+    }
+
+    //rutas 
     routes() {
         this.app.get('/', (req: Request, res: Response) => {
             res.json({
@@ -62,8 +94,8 @@ class Server {
     }
 
     midlerwares() {
-        //visualizar las peticiones
-        this.app.use(morgan('combined'));
+        // //visualizar las peticiones
+        // this.app.use(morgan('combined'));
         //pasar los datos
         this.app.use(express.json());
         //cors
@@ -71,6 +103,8 @@ class Server {
 
     }
 
+    //-------------------------------------------
+   
     //------------------------------------
     async testConnection() {
         try {
@@ -88,4 +122,9 @@ class Server {
 
 }
 
-export default Server;
+const serverInstance = new Server(); // Crear la instancia del servidor
+export const io = serverInstance.getIo(); // Exportar la instancia de io
+export default serverInstance; // Exportar la instancia del servidor
+
+
+

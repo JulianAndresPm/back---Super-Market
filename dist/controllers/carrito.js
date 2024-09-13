@@ -16,6 +16,7 @@ exports.deleteCarrito = exports.updateCarrito = exports.dataCarrito = exports.po
 const carrito_1 = __importDefault(require("../models/carrito"));
 const producto_1 = __importDefault(require("../models/producto"));
 const carrito_2 = __importDefault(require("../models/carrito"));
+const server_1 = require("../models/server");
 const getListaCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const listaCarrito = yield carrito_1.default.findAll(); // Verifica aquí si obtienes resultados
@@ -39,7 +40,7 @@ exports.getListaCarrito = getListaCarrito;
 const getCarritoByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //id del usuario en la session storage
     const { usuario_id } = req.params;
-    console.log('ID del usuario obtenido de la ruta:', usuario_id);
+    // console.log('ID del usuario obtenido de la ruta:', usuario_id);
     try {
         const getProductos = yield carrito_1.default.findAll({
             where: { usuario_id },
@@ -85,6 +86,8 @@ const postCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             cantidad,
             subtotal
         });
+        //emitir un evento de websocket cuando se agrega un prodcuto al carrito
+        server_1.io.emit('carritoActualizado', { usuario_id, carrito: nuevoCarrito });
         res.json({
             msg: 'Registro agregado exitosamente',
             data: nuevoCarrito // Puedes devolver el registro creado si es necesario
@@ -172,6 +175,8 @@ const deleteCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const carrito = yield carrito_2.default.findByPk(id);
     if (carrito) {
         yield carrito.destroy();
+        // Emitir un evento de WebSocket cuando se elimina un producto
+        server_1.io.emit('carritoEliminado', { carritoId: id }); // Actualiza la lista del carrito
         res.json({
             msg: 'Producto del carrito eliminado con exito'
         });
