@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { 
-    getListaCarrito, postCarrito, dataCarrito, updateCarrito, getCarritoByUser, deleteCarrito
+    getListaCarrito, postCarrito, dataCarrito, updateCarrito, getCarritoByUser, deleteCarrito,
+    deleteProductosCarrito
 } from '../controllers/carrito';
 
 const router = Router();
@@ -18,6 +19,8 @@ router.get('/:id', dataCarrito)
 router.put('/:id', updateCarrito)
 //eliminar un producto
 router.delete('/:id', deleteCarrito)
+//eliminar los productosd e un usuario
+router.delete('/eliminar/:usuario_id', deleteProductosCarrito)
 
 
 

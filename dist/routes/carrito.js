@@ -16,4 +16,6 @@ router.get('/:id', carrito_1.dataCarrito);
 router.put('/:id', carrito_1.updateCarrito);
 //eliminar un producto
 router.delete('/:id', carrito_1.deleteCarrito);
+//eliminar los productosd e un usuario
+router.delete('/eliminar/:usuario_id', carrito_1.deleteProductosCarrito);
 exports.default = router;

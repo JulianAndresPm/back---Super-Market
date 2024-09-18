@@ -12,10 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCarrito = exports.updateCarrito = exports.dataCarrito = exports.postCarrito = exports.getCarritoByUser = exports.getListaCarrito = void 0;
-const carrito_1 = __importDefault(require("../models/carrito"));
+exports.deleteProductosCarrito = exports.deleteCarrito = exports.updateCarrito = exports.dataCarrito = exports.postCarrito = exports.getCarritoByUser = exports.getListaCarrito = void 0;
 const producto_1 = __importDefault(require("../models/producto"));
-const carrito_2 = __importDefault(require("../models/carrito"));
+const carrito_1 = __importDefault(require("../models/carrito"));
 const server_1 = require("../models/server");
 const getListaCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -47,9 +46,7 @@ const getCarritoByUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
             include: [{ model: producto_1.default, as: 'Producto' }]
         });
         if (!getProductos.length) {
-            return res.status(400).json({
-                msg: 'no se encontraron productos para este usuario'
-            });
+            return res.status(200).json([]); // Devuelve un array vacío
         }
         else {
             res.json(getProductos);
@@ -172,11 +169,11 @@ const updateCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.updateCarrito = updateCarrito;
 const deleteCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const carrito = yield carrito_2.default.findByPk(id);
-    if (carrito) {
-        yield carrito.destroy();
+    const Carrito = yield carrito_1.default.findByPk(id);
+    if (Carrito) {
+        yield Carrito.destroy();
         // Emitir un evento de WebSocket cuando se elimina un producto
-        server_1.io.emit('carritoEliminado', { carritoId: id }); // Actualiza la lista del carrito
+        //io.emit('carritoEliminado', { carritoId: id }); // Actualiza la lista del carrito
         res.json({
             msg: 'Producto del carrito eliminado con exito'
         });
@@ -188,3 +185,30 @@ const deleteCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteCarrito = deleteCarrito;
+//Depues de finalizar la compra se ve recomdable que los productos
+//que estan el carrito se elimine ya que se finalizo la compra
+const deleteProductosCarrito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { usuario_id } = req.params;
+    try {
+        // Verificamos si el usuario_id está definido
+        if (!usuario_id) {
+            return res.status(400).json({ message: 'ID de usuario no proporcionado o inválido' });
+        }
+        // Ejecutamos la eliminación de los productos del carrito
+        const deletedCount = yield carrito_1.default.destroy({
+            where: { usuario_id }
+        });
+        if (deletedCount > 0) {
+            server_1.io.emit('carritoActualizado', { usuario_id, carrito: [] });
+            return res.status(200).json({ message: 'Productos eliminados del carrito con éxito' });
+        }
+        else {
+            return res.status(404).json({ message: 'No se encontraron productos en el carrito para este usuario' });
+        }
+    }
+    catch (error) {
+        console.error('Error al eliminar productos del carrito:', error);
+        return res.status(500).json({ message: 'Error interno del servidor al intentar eliminar los productos del carrito' });
+    }
+});
+exports.deleteProductosCarrito = deleteProductosCarrito;

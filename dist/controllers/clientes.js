@@ -57,9 +57,6 @@ const updateClientes = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const foto = req.file;
     // El resto de los campos estarán en req.body
     const { nombre, apellidos, edad, sexo, correo, contraseña } = req.body;
-    // console.log('ID:', id);
-    // console.log('File:', imagen);
-    // console.log('Body:', req.body);
     try {
         const cliente = yield clientes_1.default.findByPk(id);
         if (cliente) {

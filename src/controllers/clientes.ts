@@ -51,9 +51,6 @@ export const updateClientes = async (req: Request, res: Response) => {
     // El resto de los campos estarán en req.body
     const { nombre, apellidos, edad, sexo, correo, contraseña} = req.body;
 
-    // console.log('ID:', id);
-    // console.log('File:', imagen);
-    // console.log('Body:', req.body);
 
     try {
         const cliente = await clientes.findByPk(id);

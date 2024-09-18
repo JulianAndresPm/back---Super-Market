@@ -4,6 +4,7 @@ import routesAdmin from '../routes/admin'
 import routesClientes from '../routes/clientes'
 import routesLogin from '../routes/login'
 import routesCarrito from '../routes/carrito'
+import routesFactura from '../routes/factura'
 import db from '../db/conexion'
 import cors from 'cors'
 import path from 'path'
@@ -84,7 +85,10 @@ class Server {
         this.app.use('/api/carrito', routesCarrito);
 
         //Ruta para validar el login
-        this.app.use('/api/login',routesLogin )
+        this.app.use('/api/login',routesLogin );
+
+        //Ruta para la factura
+        this.app.use('/api/factura', routesFactura);
 
 
         // Servir archivos estáticos desde la carpeta 'imagenes'

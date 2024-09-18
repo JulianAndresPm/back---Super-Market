@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
-import carrito from "../models/carrito"; 
 import producto from "../models/producto";
-import Carrito from "../models/carrito"
+import carrito from "../models/carrito"
 import { io } from '../models/server'; 
-
-
 
 export const getListaCarrito = async (req: Request, res: Response) => {
     try {
@@ -40,9 +37,7 @@ export const getCarritoByUser = async(req: Request, res:Response)=>{
         });
 
         if (!getProductos.length) {
-            return res.status(400).json({
-                msg: 'no se encontraron productos para este usuario'
-            })
+            return res.status(200).json([]); // Devuelve un array vacío
         } else {
             res.json(getProductos);   
         }
@@ -178,12 +173,12 @@ export const updateCarrito = async (req: Request, res: Response) => {
 
 export const deleteCarrito = async(req: Request, res: Response) =>{
     const {id} = req.params;
-    const carrito = await Carrito.findByPk(id);
+    const Carrito = await carrito.findByPk(id);
 
-    if (carrito) {
-        await carrito.destroy();
+    if (Carrito) {
+        await Carrito.destroy();
         // Emitir un evento de WebSocket cuando se elimina un producto
-        io.emit('carritoEliminado', { carritoId: id }); // Actualiza la lista del carrito
+        //io.emit('carritoEliminado', { carritoId: id }); // Actualiza la lista del carrito
         res.json({
             msg: 'Producto del carrito eliminado con exito'
         })
@@ -193,3 +188,33 @@ export const deleteCarrito = async(req: Request, res: Response) =>{
         })
     }
 }
+
+//Depues de finalizar la compra se ve recomdable que los productos
+//que estan el carrito se elimine ya que se finalizo la compra
+export const deleteProductosCarrito = async (req: Request, res: Response) => {
+    const { usuario_id } = req.params;
+  
+    try {
+      // Verificamos si el usuario_id está definido
+      if (!usuario_id) {
+        return res.status(400).json({ message: 'ID de usuario no proporcionado o inválido' });
+      }
+  
+      // Ejecutamos la eliminación de los productos del carrito
+      const deletedCount = await carrito.destroy({
+        where: { usuario_id }
+      });
+
+    
+  
+      if (deletedCount > 0) {
+        io.emit('carritoActualizado',{usuario_id, carrito: []})
+        return res.status(200).json({ message: 'Productos eliminados del carrito con éxito' });
+      } else {
+        return res.status(404).json({ message: 'No se encontraron productos en el carrito para este usuario' });
+      }
+    } catch (error) {
+      console.error('Error al eliminar productos del carrito:', error);
+      return res.status(500).json({ message: 'Error interno del servidor al intentar eliminar los productos del carrito' });
+    }
+  };
