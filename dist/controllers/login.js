@@ -25,7 +25,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const admin = yield usuarios_admin_1.default.findOne({ where: { usuario, passw } });
         if (admin) {
             // Usuario encontrado en admin
-            const accesstoken = jsonwebtoken_1.default.sign({ usuario: admin.get('usuario'), rol: admin.get('rol') }, KEY, { expiresIn: '5m' });
+            const accesstoken = jsonwebtoken_1.default.sign({ usuario: admin.get('usuario'), rol: admin.get('rol'), info: admin }, KEY, { expiresIn: '1h' });
             return res.status(200).json({
                 message: 'Login successful admin',
                 accesstoken,
@@ -37,7 +37,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const cliente = yield clientes_1.default.findOne({ where: { usuario, contrasena: passw } });
         if (cliente) {
             // Usuario encontrado en cliente
-            const accesstoken = jsonwebtoken_1.default.sign({ usuario: cliente.get('usuario'), rol: 'cliente' }, KEY, { expiresIn: '5m' });
+            const accesstoken = jsonwebtoken_1.default.sign({ usuario: cliente.get('id'), rol: 'cliente', info: cliente }, KEY, { expiresIn: '1h' });
             return res.status(200).json({
                 message: 'Login successful cliente',
                 accesstoken,

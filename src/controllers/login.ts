@@ -15,9 +15,9 @@ export const login = async (req: Request, res: Response) => {
         if (admin) {
             // Usuario encontrado en admin
             const accesstoken = jwt.sign(
-                { usuario: admin.get('usuario'), rol: admin.get('rol') },
+                { usuario: admin.get('usuario'), rol: admin.get('rol'), info: admin },
                 KEY as Secret,
-                { expiresIn: '5m' }
+                { expiresIn: '1h' }
             );
             return res.status(200).json({
                 message: 'Login successful admin',
@@ -32,9 +32,9 @@ export const login = async (req: Request, res: Response) => {
         if (cliente) {
             // Usuario encontrado en cliente
             const accesstoken = jwt.sign(
-                { usuario: cliente.get('usuario'), rol: 'cliente' },
+                { usuario: cliente.get('id'), rol: 'cliente', info: cliente},
                 KEY as Secret,
-                { expiresIn: '5m' }
+                { expiresIn: '1h' }
             );
             return res.status(200).json({
                 message: 'Login successful cliente',

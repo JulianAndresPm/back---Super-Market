@@ -12,16 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postFactura = void 0;
+exports.sendFactura = exports.postFactura = void 0;
 const factura_1 = __importDefault(require("../models/factura"));
 const puppeteer_1 = __importDefault(require("puppeteer"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const clientes_1 = __importDefault(require("../models/clientes"));
 // Función para generar PDF con Puppeteer
 const generarPDF = (htmlContent, fileName) => __awaiter(void 0, void 0, void 0, function* () {
     const browser = yield puppeteer_1.default.launch();
     const page = yield browser.newPage();
     yield page.setContent(htmlContent, { waitUntil: "networkidle0" });
+    //Diseño CCS para generar PDF
     yield page.addStyleTag({ content: `
 
     /* Centra el título de la factura */
@@ -109,6 +112,7 @@ const generarPDF = (htmlContent, fileName) => __awaiter(void 0, void 0, void 0, 
     yield browser.close();
     return filePath;
 });
+// Funcion para Enviar los datos de la tabla
 const postFactura = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { usuario_id, valor_total, htmlContent } = req.body;
     if (!usuario_id || !valor_total || !htmlContent) {
@@ -130,6 +134,8 @@ const postFactura = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             msg: "Factura creada y PDF guardado con éxito",
             pdfPath: filePath,
         });
+        // Enviar el correo con la factura al usuario
+        yield (0, exports.sendFactura)(usuario_id, filePath);
     }
     catch (error) {
         console.error("Error al agregar la factura:", error);
@@ -140,3 +146,48 @@ const postFactura = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.postFactura = postFactura;
+//Funcion para enviar la factura al cliente
+const sendFactura = (usuario_id, facturaPath) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log("Iniciando el envío de la factura para el usuario:", usuario_id);
+        // Obtener el email del usuario desde la base de datos
+        const usuario = yield clientes_1.default.findByPk(usuario_id);
+        if (!usuario || !usuario.get('correo')) {
+            throw new Error('Usuario no encontrado o sin email');
+            return;
+        }
+        // Mensaje para mostrar el correo electrónico del usuario
+        console.log("Correo electrónico del usuario:", usuario.get('correo'));
+        const transporter = nodemailer_1.default.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: "julianandrespazm@gmail.com",
+                pass: "cuhj nioq juns wgwv",
+            },
+        });
+        console.log("Transporte SMTP configurado correctamente.");
+        // Configurar el mensaje de correo
+        const mailOptions = {
+            from: '"SuperMarket" <julianandrespazm@gmail.com>', // Cambia "Supermercado" por tu nombre de remitente
+            to: usuario.get('correo'), // Correo del usuario
+            subject: 'Factura de compra',
+            text: 'Adjuntamos su factura de compra. Gracias por su compra!',
+            attachments: [
+                {
+                    filename: `factura_${usuario_id}.pdf`,
+                    path: facturaPath, // Ruta del PDF generado
+                },
+            ],
+        };
+        // Enviar el correo
+        const info = yield transporter.sendMail(mailOptions);
+        // Mensaje para confirmar que el correo fue enviado
+        console.log("Correo enviado con éxito. ID del mensaje:", info.messageId);
+    }
+    catch (error) {
+        console.error('Error al enviar la factura:', error);
+    }
+});
+exports.sendFactura = sendFactura;
